@@ -22,7 +22,7 @@ DATASET:
   SCALE_TYPE: 'short'
   MAX_TRANSLATE: 40
   MIN_SCALE: 0.75
-  NUM_JOINTS: 17
+  NUM_JOINTS: 20
   ROOT: 'data/coco'
   TEST: val
   TRAIN: train

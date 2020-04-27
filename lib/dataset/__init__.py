@@ -36,12 +36,12 @@ coco_part_idx = {
 # TODO
 coco_part_orders = [
     ('nose', 'eye_l'), ('eye_l', 'eye_r'), ('eye_r', 'nose'),
-    ('eye_l', 'ear_l'), ('eye_r', 'ear_r'), ('ear_l', 'sho_l'),
-    ('ear_r', 'sho_r'), ('sho_l', 'sho_r'), ('sho_l', 'hip_l'),
-    ('sho_r', 'hip_r'), ('hip_l', 'hip_r'), ('sho_l', 'elb_l'),
-    ('elb_l', 'wri_l'), ('sho_r', 'elb_r'), ('elb_r', 'wri_r'),
-    ('hip_l', 'kne_l'), ('kne_l', 'ank_l'), ('hip_r', 'kne_r'),
-    ('kne_r', 'ank_r')
+    ('eye_l', 'ear_l'), ('eye_r', 'ear_r'), ('nose', 'throat'),
+    ('throat', 'elb_l'), ('throat', 'elb_r'), ('elb_l', 'wri_l'), ('wri_l', 'paw_lf'),
+    ('elb_r', 'wri_r'), ('wri_r', 'paw_rf'), ('throat', 'withers'),
+    ('withers', 'tailset'), ('tailset', 'stif_l'), ('tailset', 'stif_r'),
+    ('stif_l', 'hock_l'), ('hock_l', 'paw_lb'), ('stif_r', 'hock_r'),
+    ('hock_r', 'paw_rb')
 ]
 
 crowd_pose_part_labels = [

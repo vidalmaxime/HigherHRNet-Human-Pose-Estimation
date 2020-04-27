@@ -36,7 +36,7 @@ class CocoKeypoints(CocoDataset):
         if cfg.DATASET.WITH_CENTER:
             assert cfg.DATASET.NUM_JOINTS == 18, 'Number of joint with center for COCO is 18'
         else:
-            assert cfg.DATASET.NUM_JOINTS == 17, 'Number of joint for COCO is 17'
+            assert cfg.DATASET.NUM_JOINTS == 20, 'Number of joint for COCO is 17'
 
         self.num_scales = self._init_check(heatmap_generator, joints_generator)
 

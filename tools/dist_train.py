@@ -27,7 +27,7 @@ import torch.utils.data.distributed
 from tensorboardX import SummaryWriter
 
 import _init_paths
-import lib.models
+import models
 
 from config import cfg
 from config import update_config
@@ -193,7 +193,7 @@ def main_worker(
         dump_input = torch.rand(
             (1, 3, cfg.DATASET.INPUT_SIZE, cfg.DATASET.INPUT_SIZE)
         )
-        writer_dict['writer'].add_graph(model, (dump_input, ))
+        #  writer_dict['writer'].add_graph(model, (dump_input, ))  #doesn't seem to work with pytorch 1.4
         # logger.info(get_model_summary(model, dump_input, verbose=cfg.VERBOSE))
 
     if cfg.FP16.ENABLED:
