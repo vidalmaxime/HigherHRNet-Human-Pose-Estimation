@@ -11,3 +11,6 @@ yacs
 cffi
 munkres
 tqdm
+torch
+torchvision
+pycocotools

@@ -70,8 +70,8 @@ _C.DATASET.DATASET = 'coco_kpt'
 _C.DATASET.DATASET_TEST = 'coco'
 _C.DATASET.NUM_JOINTS = 17
 _C.DATASET.MAX_NUM_PEOPLE = 30
-_C.DATASET.TRAIN = 'train2017'
-_C.DATASET.TEST = 'val2017'
+_C.DATASET.TRAIN = 'train'
+_C.DATASET.TEST = 'val'
 _C.DATASET.DATA_FORMAT = 'jpg'
 
 # training data augmentation

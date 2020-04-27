@@ -31,7 +31,7 @@ class CocoDataset(Dataset):
 
     Args:
         root (string): Root directory where dataset is located to.
-        dataset (string): Dataset name(train2017, val2017, test2017).
+        dataset (string): Dataset name(train, val, test).
         data_format(string): Data format for reading('jpg', 'zip')
         transform (callable, optional): A function/transform that  takes in an opencv image
             and returns a transformed version. E.g, ``transforms.ToTensor``
@@ -66,7 +66,7 @@ class CocoDataset(Dataset):
         )
 
     def _get_anno_file_name(self):
-        # example: root/annotations/person_keypoints_tran2017.json
+        # example: root/annotations/person_keypoints_train2017.json
         # image_info_test-dev2017.json
         if 'test' in self.dataset:
             return os.path.join(
@@ -80,14 +80,14 @@ class CocoDataset(Dataset):
             return os.path.join(
                 self.root,
                 'annotations',
-                'person_keypoints_{}.json'.format(
+                'dog_keypoints_{}.json'.format(
                     self.dataset
                 )
             )
 
     def _get_image_path(self, file_name):
         images_dir = os.path.join(self.root, 'images')
-        dataset = 'test2017' if 'test' in self.dataset else self.dataset
+        dataset = 'test' if 'test' in self.dataset else self.dataset
         if self.data_format == 'zip':
             return os.path.join(images_dir, dataset) + '.zip@' + file_name
         else:

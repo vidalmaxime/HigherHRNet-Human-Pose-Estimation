@@ -92,4 +92,5 @@ external/
 
 draws/
 plot/
-
+venv/
+.idea/

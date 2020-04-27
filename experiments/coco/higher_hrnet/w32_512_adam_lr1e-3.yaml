@@ -24,8 +24,8 @@ DATASET:
   MIN_SCALE: 0.75
   NUM_JOINTS: 17
   ROOT: 'data/coco'
-  TEST: val2017
-  TRAIN: train2017
+  TEST: val
+  TRAIN: train
 DEBUG:
   DEBUG: True
   SAVE_BATCH_IMAGES_GT: False
