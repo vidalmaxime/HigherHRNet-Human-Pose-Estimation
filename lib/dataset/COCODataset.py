@@ -186,12 +186,12 @@ class CocoDataset(Dataset):
                 if cfg.DATASET.WITH_CENTER and not cfg.TEST.IGNORE_CENTER:
                     kpt = kpt[:-1]
 
-                kpts[int(file_name[-16:-4])].append(
+                kpts[int(''.join([s for s in file_name if s.isdigit()]))].append(  # kpts[int(file_name[-16:-4])
                     {
                         'keypoints': kpt[:, 0:3],
                         'score': scores[idx][idx_kpt],
                         'tags': kpt[:, 3],
-                        'image': int(file_name[-16:-4]),
+                        'image': int(''.join([s for s in file_name if s.isdigit()])),  # int(file_name[-16:-4]),
                         'area': area
                     }
                 )
