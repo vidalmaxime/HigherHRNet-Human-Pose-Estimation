@@ -96,7 +96,7 @@ MODEL:
       - True
   INIT_WEIGHTS: True
   NAME: pose_higher_hrnet
-  NUM_JOINTS: 17
+  NUM_JOINTS: 20
   PRETRAINED: 'models/pytorch/imagenet/hrnet_w32-36af842e.pth'
   TAG_PER_JOINT: True
 TEST:
@@ -113,10 +113,10 @@ TEST:
 TRAIN:
   BEGIN_EPOCH: 0
   CHECKPOINT: ''
-  END_EPOCH: 300
+  END_EPOCH: 2
   GAMMA1: 0.99
   GAMMA2: 0.0
-  IMAGES_PER_GPU: 12
+  IMAGES_PER_GPU: 8
   LR: 0.001
   LR_FACTOR: 0.1
   LR_STEP: [200, 260]

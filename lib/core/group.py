@@ -111,11 +111,11 @@ class Params(object):
 
         if cfg.DATASET.WITH_CENTER and not cfg.TEST.IGNORE_CENTER:
             self.joint_order = [
-                i-1 for i in [18, 1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17]
+                i-1 for i in [18, 1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17] #TODO for animal pose
             ]
         else:
             self.joint_order = [
-                i-1 for i in [1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17]
+                i-1 for i in [1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20]
             ]
 
 
