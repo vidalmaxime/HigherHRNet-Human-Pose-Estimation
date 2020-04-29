@@ -21,12 +21,13 @@ from dataset import VIS_CONFIG
 def add_joints(image, joints, color, dataset='COCO'):
     part_idx = VIS_CONFIG[dataset]['part_idx']
     part_orders = VIS_CONFIG[dataset]['part_orders']
+    kpt_threshold = 0.2
 
     def link(a, b, color):
         if part_idx[a] < joints.shape[0] and part_idx[b] < joints.shape[0]:
             jointa = joints[part_idx[a]]
             jointb = joints[part_idx[b]]
-            if jointa[2] > 0 and jointb[2] > 0:
+            if jointa[2] > kpt_threshold and jointb[2] > kpt_threshold:
                 cv2.line(
                     image,
                     (int(jointa[0]), int(jointa[1])),
@@ -37,7 +38,7 @@ def add_joints(image, joints, color, dataset='COCO'):
 
     # add joints
     for joint in joints:
-        if joint[2] > 0:
+        if joint[2] > kpt_threshold:
             cv2.circle(image, (int(joint[0]), int(joint[1])), 1, color, 2)
 
     # add link

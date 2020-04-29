@@ -1,4 +1,5 @@
 EasyDict==1.7
+numpy==1.17.5
 opencv-python
 Cython
 scipy
