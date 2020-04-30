@@ -255,7 +255,7 @@ class CocoDataset(Dataset):
         cat_id = data_pack['cat_id']
         keypoints = data_pack['keypoints']
         cat_results = []
-        num_joints = 17
+        num_joints = 20
 
         for img_kpts in keypoints:
             if len(img_kpts) == 0:
