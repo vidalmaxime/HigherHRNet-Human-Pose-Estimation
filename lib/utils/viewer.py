@@ -126,6 +126,7 @@ def plot(data, gt_file, img_path, save_path,
 
     p = coco_eval.params
     p.imgIds = list(np.unique(p.imgIds))
+    print(p.imgIds)
     if p.useCats:
         p.catIds = list(np.unique(p.catIds))
     p.maxDets = sorted(p.maxDets)
@@ -138,9 +139,8 @@ def plot(data, gt_file, img_path, save_path,
     imgs = coco.loadImgs(p.imgIds)
     mean_rmse_list = []
     mean_rmse_mask_list = []
-
     for catId in catIds:
-        for imgId in imgs[:1000]:
+        for imgId in imgs[:1]:
             # dimension here should be Nxm
             gts = gts_[imgId['id'], catId]
             dts = dts_[imgId['id'], catId]

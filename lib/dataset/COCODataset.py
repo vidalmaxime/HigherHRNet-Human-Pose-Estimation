@@ -210,18 +210,18 @@ class CocoDataset(Dataset):
             else:
                 oks_nmsed_kpts.append([img_kpts[_keep] for _keep in keep])
 
-        self._write_coco_keypoint_results(
+        results, res_file = self._write_coco_keypoint_results(
             oks_nmsed_kpts, res_file
         )
 
-        if 'test' not in self.dataset:
-            info_str = self._do_python_keypoint_eval(
-                res_file, res_folder
-            )
-            name_value = OrderedDict(info_str)
-            return name_value, name_value['AP']
-        else:
-            return {'Null': 0}, 0
+        # if 'test' not in self.dataset:
+        #     info_str = self._do_python_keypoint_eval(
+        #         res_file, res_folder
+        #     )
+        #     name_value = OrderedDict(info_str)
+        #     return name_value, name_value['AP']
+        # else:
+        return results, res_file #{'Null': 0}, 0
 
     def _write_coco_keypoint_results(self, keypoints, res_file):
         data_pack = [
@@ -250,6 +250,7 @@ class CocoDataset(Dataset):
             with open(res_file, 'w') as f:
                 for c in content:
                     f.write(c)
+        return results, res_file
 
     def _coco_keypoint_results_one_category_kernel(self, data_pack):
         cat_id = data_pack['cat_id']

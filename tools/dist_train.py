@@ -41,6 +41,10 @@ from utils.utils import get_optimizer
 from utils.utils import save_checkpoint
 from utils.utils import setup_logger
 
+from dataset import make_test_dataloader
+
+from core.function import validate
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train keypoints network')
@@ -237,6 +241,7 @@ def main_worker(
         cfg, is_train=True, distributed=args.distributed
     )
     logger.info(train_loader.dataset)
+    valid_loader, valid_dataset = make_test_dataloader(cfg)
 
     best_perf = -1
     best_model = False
@@ -284,7 +289,11 @@ def main_worker(
         # In PyTorch 1.1.0 and later, you should call `lr_scheduler.step()` after `optimizer.step()`.
         lr_scheduler.step()
 
-        perf_indicator = epoch
+        perf_indicator = validate(
+            cfg, valid_loader, valid_dataset, model,
+            final_output_dir, tb_log_dir, writer_dict
+        )
+        #perf_indicator = epoch
         if perf_indicator >= best_perf:
             best_perf = perf_indicator
             best_model = True
