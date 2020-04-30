@@ -172,10 +172,8 @@ def validate(config, val_loader, val_dataset, model,  output_dir,
                 RMSE_mask = RMSE[mask]
                 mean_rmse = np.round(np.nanmean(RMSE.flatten()), 2)
                 mean_rmse_mask = np.round(np.nanmean(RMSE_mask.flatten()), 2)
-                print(f"mean rmse: {mean_rmse}")
-                print(f"mean rmse mask: {mean_rmse_mask}")
                 mean_rmse_list.append(mean_rmse)
                 mean_rmse_mask_list.append(mean_rmse_mask)
-    print(f"total mean rmse: {np.mean(mean_rmse_list)}")
-    print(f"total mean rmse mask: {np.mean(mean_rmse_mask_list)}")
+    print(f"Mean RMSE: {np.mean(mean_rmse_list)}")
+    print(f"Mean RMSE mask: {np.mean(mean_rmse_mask_list)}")
     return np.mean(mean_rmse_list)
