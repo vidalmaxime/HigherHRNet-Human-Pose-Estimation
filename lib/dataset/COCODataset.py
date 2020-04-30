@@ -20,7 +20,7 @@ import json_tricks as json
 import numpy as np
 from torch.utils.data import Dataset
 
-from cocoeval import COCOeval
+from utils.cocoeval import COCOeval
 from utils import zipreader
 
 logger = logging.getLogger(__name__)
