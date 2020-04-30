@@ -140,7 +140,7 @@ def validate(config, val_loader, val_dataset, model,  output_dir,
         config, all_preds, all_scores, output_dir
     )
     ##################################
-    gt_file = val_dataset._get_anno_file_name
+    gt_file = val_dataset._get_anno_file_name()
     coco = COCO(gt_file)
     coco_dt = coco.loadRes(res_file)
     coco_eval = COCOeval(coco, coco_dt, 'keypoints')
