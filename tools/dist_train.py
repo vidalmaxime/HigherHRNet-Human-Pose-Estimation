@@ -169,7 +169,7 @@ def main_worker(
     # setup logger
     logger, _ = setup_logger(final_output_dir, args.rank, 'train')
 
-    model = eval('models.'+cfg.MODEL.NAME+'.get_pose_net')(
+    model = eval('models.' + cfg.MODEL.NAME + '.get_pose_net')(
         cfg, is_train=True
     )
 
@@ -293,13 +293,12 @@ def main_worker(
             cfg, valid_loader, valid_dataset, model,
             final_output_dir, tb_log_dir, writer_dict
         )
-        #perf_indicator = epoch
+        # perf_indicator = epoch
         if perf_indicator <= best_perf:
             best_perf = perf_indicator
             best_model = True
         else:
             best_model = False
-
 
         if not cfg.MULTIPROCESSING_DISTRIBUTED or (
                 cfg.MULTIPROCESSING_DISTRIBUTED
