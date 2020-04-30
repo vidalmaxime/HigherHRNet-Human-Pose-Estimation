@@ -176,4 +176,14 @@ def validate(config, val_loader, val_dataset, model,  output_dir,
                 mean_rmse_mask_list.append(mean_rmse_mask)
     print(f"Mean RMSE: {np.mean(mean_rmse_list)}")
     print(f"Mean RMSE mask: {np.mean(mean_rmse_mask_list)}")
+    writer_dict["writer"].add_scalar(
+        "rmse",
+        np.mean(mean_rmse_list),
+        writer_dict['train_global_steps']
+    )
+    writer_dict["writer"].add_scalar(
+        "rmse_mask",
+        np.mean(mean_rmse_mask_list),
+        writer_dict['train_global_steps']
+    )
     return np.mean(mean_rmse_list)

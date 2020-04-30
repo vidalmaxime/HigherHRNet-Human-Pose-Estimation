@@ -300,6 +300,7 @@ def main_worker(
         else:
             best_model = False
 
+
         if not cfg.MULTIPROCESSING_DISTRIBUTED or (
                 cfg.MULTIPROCESSING_DISTRIBUTED
                 and args.rank == 0
