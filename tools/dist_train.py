@@ -294,7 +294,7 @@ def main_worker(
             final_output_dir, tb_log_dir, writer_dict
         )
         #perf_indicator = epoch
-        if perf_indicator >= best_perf:
+        if perf_indicator <= best_perf:
             best_perf = perf_indicator
             best_model = True
         else:
