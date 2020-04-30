@@ -1,49 +1,9 @@
-# import numpy as np
-# import skimage.io as io
-# import matplotlib.pyplot as plt
-# import pylab
-# from pycocotools.coco import COCO
-# import os
-# pylab.rcParams['figure.figsize'] = (8.0, 10.0) # image pixel
-#
-# dataDir = r'/home/maxime/Documents/mathislab/bearproject/data/coco'
-# dataType = r'val'
-# annFile = r'{}/annotations/pred_keypoints_{}.json'.format(dataDir, dataType)
-#
-# coco = COCO(annotation_file=annFile)
-#
-# cats = coco.loadCats(coco.getCatIds())
-# nms = [cat['name'] for cat in cats]
-# nms = set([cat['supercategory'] for cat in cats])
-#
-# catIds = coco.getCatIds(catNms=['dog'])
-# imgIds = coco.getImgIds(catIds=catIds)
-# index = np.random.randint(0, len(imgIds))
-# img = coco.loadImgs(imgIds[index])[0]  # Load images with specified ids.
-#
-# image_path = os.path.join("/home/maxime/Documents/mathislab/bearproject/data/coco/images/val", img["file_name"])
-# i = io.imread(image_path)
-# plt.axis('off')
-# plt.imshow(i)
-# annIds = coco.getAnnIds(imgIds=img['id'], catIds=catIds, iscrowd=None)
-# anns = coco.loadAnns(annIds)
-# c = (np.random.random((1, 3))*0.6+0.4).tolist()[0]
-# for ann in anns:
-#     kp = np.array(ann['keypoints'])
-#     print(kp)
-#     x = kp[0::3]
-#     y = kp[1::3]
-#     v = kp[2::3]
-#     plt.plot(x[v>0], y[v>0],'o',markersize=10, markerfacecolor=c, markeredgecolor='k',markeredgewidth=2)
-# #coco.showAnns(anns)
-# plt.show()
-
-
 # ------------------------------------------------------------------------------
 # Copyright (c) Microsoft
 # Licensed under the MIT License.
 # Written by Ke Sun (sunk@mail.ustc.edu.cn)
 # Modified by Depu Meng (mdp@mail.ustc.edu.cn)
+# Modified by Maxime Vidal
 # ------------------------------------------------------------------------------
 
 import argparse
@@ -74,13 +34,19 @@ class ColorStyle:
             self.ring_color.append(tuple(np.array(self.point_color[i]) / 255.))
 
 
-# Chunhua Style
+# Style
 # (R,G,B)
-color2 = [(252, 176, 243), (252, 176, 243), (252, 176, 243),
+color2 = [(169, 209, 142), (169, 209, 142),
+          (20, 50, 90), (20, 50, 90),
+          (169, 209, 142), (20, 50, 90),
           (0, 176, 240), (0, 176, 240), (0, 176, 240),
-          (240, 2, 127), (240, 2, 127), (240, 2, 127), (240, 2, 127), (240, 2, 127),
-          (255, 255, 0), (255, 255, 0), (169, 209, 142),
-          (169, 209, 142), (169, 209, 142), (169, 209, 142), (169, 209, 142), (169, 209, 142), (169, 209, 142)]
+          (252, 176, 243), (252, 176, 243), (252, 176, 243), (252, 176, 243), (252, 176, 243),
+          (240, 2, 127),
+          (255, 255, 0),
+          (240, 2, 127),
+          (240, 2, 127),
+          (255, 255, 0),
+          (255, 255, 0)]
 
 # link_pairs2 = [
 #     [15, 13], [13, 11], [11, 5],
@@ -96,18 +62,22 @@ link_pairs2 = [
     [2, 3], [2, 4], [3, 5], [6, 13], [6, 14], [13, 11], [11, 9], [14, 12], [12, 10]
 ]
 
-point_color2 = [(240, 2, 127), (240, 2, 127), (240, 2, 127),
-                (240, 2, 127), (240, 2, 127),
-                (255, 255, 0), (169, 209, 142),
-                (255, 255, 0), (169, 209, 142),
-                (255, 255, 0), (169, 209, 142),
-                (252, 176, 243), (0, 176, 240), (252, 176, 243),
-                (0, 176, 240), (252, 176, 243), (0, 176, 240),
-                (255, 255, 0), (169, 209, 142),
-                (255, 255, 0), (169, 209, 142),
-                (255, 255, 0), (169, 209, 142)]
+point_color2 = [(252, 176, 243), (252, 176, 243), (252, 176, 243), (252, 176, 243), (252, 176, 243),
+                (0, 176, 240), (0, 176, 240), (0, 176, 240),
+                (240, 2, 127),
+                (255, 255, 0),
+                (240, 2, 127),
+                (255, 255, 0),
+                (240, 2, 127),
+                (255, 255, 0),
+                (169, 209, 142),
+                (20, 50, 90),
+                (169, 209, 142),
+                (20, 50, 90),
+                (169, 209, 142),
+                (20, 50, 90)]
 
-chunhua_style = ColorStyle(color2, link_pairs2, point_color2)
+style = ColorStyle(color2, link_pairs2, point_color2)
 
 
 def parse_args():
@@ -145,7 +115,7 @@ def map_joint_dict(joints):
     for i in range(joints.shape[0]):
         x = int(joints[i][0])
         y = int(joints[i][1])
-        id = i
+        id = i + 1
         joints_dict[id] = (x, y)
 
     return joints_dict
@@ -170,13 +140,13 @@ def plot(data, gt_file, img_path, save_path,
     # loop through images, area range, max detection number
     catIds = p.catIds if p.useCats else [-1]
     threshold = 0
-    joint_thres = 0
+    joint_thres = 0.1
 
     imgs = coco.loadImgs(p.imgIds)
     # print(imgs)
 
     for catId in catIds:
-        for imgId in imgs[:10]:  # p.imgIds[:5000]:
+        for imgId in imgs[:30]:  # p.imgIds[:5000]:
             # dimension here should be Nxm
             gts = gts_[imgId['id'], catId]
             dts = dts_[imgId['id'], catId]
@@ -189,7 +159,6 @@ def plot(data, gt_file, img_path, save_path,
 
             sum_score = 0
             num_box = 0
-            # img_name = str(imgId).zfill(12)
             # Read Images
             img_file = os.path.join(img_path, imgId["file_name"])
             #  img_file = img_path + img_name + '.jpg'
@@ -232,33 +201,36 @@ def plot(data, gt_file, img_path, save_path,
                     sum_area = s_x * s_y
                     iou = ol_area / (sum_area + np.spacing(1))
                     score = dt['score']
-
+                    print(f"score: {dt['score']}")
                     if iou < 0.1 or score < threshold:
                         continue
                     else:
-                        print('iou: ', iou)
+                        print(f'iou: {iou}')
                         dt_w = dt_x1 - dt_x0
                         dt_h = dt_y1 - dt_y0
                         ref = min(dt_w, dt_h)
                         num_box += 1
                         sum_score += dt['score']
-                        print(dt['keypoints'])
                         dt_joints = np.array(dt['keypoints']).reshape(20, -1)
                         joints_dict = map_joint_dict(dt_joints)
-
+                        # print(joints_dict)
+                        # print(link_pairs)
+                        # print(dt_joints)
                         # stick
                         for k, link_pair in enumerate(link_pairs):
                             if link_pair[0] in joints_dict \
                                     and link_pair[1] in joints_dict:
-                                if dt_joints[link_pair[0], 2] < joint_thres \
-                                        or dt_joints[link_pair[1], 2] < joint_thres \
-                                        or vg[link_pair[0]] == 0 \
-                                        or vg[link_pair[1]] == 0:
+                                # print(link_pair[0])
+                                # print(vg)
+                                if dt_joints[link_pair[0] - 1, 2] < joint_thres \
+                                        or dt_joints[link_pair[1] - 1, 2] < joint_thres \
+                                        or vg[link_pair[0] - 1] == 0 \
+                                        or vg[link_pair[1] - 1] == 0:
                                     continue
-                            if k in range(6, 11):
-                                lw = 1
-                            else:
-                                lw = ref / 100.
+                            # if k in range(6, 11):
+                            #     lw = 1
+                            # else:
+                            lw = ref / 100.
                             line = mlines.Line2D(
                                 np.array([joints_dict[link_pair[0]][0],
                                           joints_dict[link_pair[1]][0]]),
@@ -275,10 +247,10 @@ def plot(data, gt_file, img_path, save_path,
                                 continue
                             if dt_joints[k, 0] > w or dt_joints[k, 1] > h:
                                 continue
-                            if k in range(5):
-                                radius = 1
-                            else:
-                                radius = ref / 100
+                            # if k in range(5):
+                            #     radius = 1
+                            # else:
+                            radius = ref / 100
 
                             circle = mpatches.Circle(tuple(dt_joints[k, :2]),
                                                      radius=radius,
@@ -298,12 +270,11 @@ def plot(data, gt_file, img_path, save_path,
             plt.margins(0, 0)
             if save:
                 plt.savefig(save_path + \
-                            'score_' + str(np.int(avg_score)) + \
-                            '_id_' + str(imgId) + \
-                            '_' + imgId["file_name"] + '.png',
+                            'score_' + str(np.int(avg_score)) + "_" +
+                            imgId["file_name"].split(".")[0] + '.png',
                             format='png', bbox_inckes='tight', dpi=100)
-                plt.savefig(save_path + 'id_' + str(imgId) + '.pdf', format='pdf',
-                            bbox_inckes='tight', dpi=100)
+                # plt.savefig(save_path + 'id_' + str(imgId) + '.pdf', format='pdf',
+                #             bbox_inckes='tight', dpi=100)
             # plt.show()
             plt.close()
 
@@ -312,7 +283,7 @@ if __name__ == '__main__':
 
     args = parse_args()
 
-    colorstyle = chunhua_style
+    colorstyle = style
     save_path = args.save_path
     img_path = args.image_path
     if not os.path.exists(save_path):
