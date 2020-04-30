@@ -7,17 +7,16 @@
 # ------------------------------------------------------------------------------
 
 import argparse
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2
 import json
-import matplotlib.lines as mlines
-import matplotlib.patches as mpatches
-
-from pycocotools.cocoeval import COCOeval
 import os
 
+import cv2
+import matplotlib.lines as mlines
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
 from coco import COCO
+from pycocotools.cocoeval import COCOeval
 
 
 class ColorStyle:
@@ -47,13 +46,6 @@ color2 = [(169, 209, 142), (169, 209, 142),
           (240, 2, 127),
           (255, 255, 0),
           (255, 255, 0)]
-
-# link_pairs2 = [
-#     [15, 13], [13, 11], [11, 5],
-#     [12, 14], [14, 16], [12, 6],
-#     [3, 1], [1, 2], [1, 0], [0, 2], [2, 4],
-#     [9, 7], [7, 5], [5, 6], [6, 8], [8, 10],
-# ]
 
 link_pairs2 = [
     [15, 17], [17, 19], [16, 18],

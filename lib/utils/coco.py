@@ -1,3 +1,4 @@
+# Modified lines 318-350  id+1 -> ann['image_id']
 __author__ = 'tylin'
 __version__ = '2.0'
 # Interface for accessing the Microsoft COCO dataset.
