@@ -15,6 +15,7 @@ import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from coco import COCO
 from pycocotools.cocoeval import COCOeval
 
@@ -135,13 +136,27 @@ def plot(data, gt_file, img_path, save_path,
     joint_thres = 0.1
 
     imgs = coco.loadImgs(p.imgIds)
-    # print(imgs)
+    mean_rmse_list = []
+    mean_rmse_mask_list = []
 
     for catId in catIds:
-        for imgId in imgs[:30]:  # p.imgIds[:5000]:
+        for imgId in imgs[:1000]:
             # dimension here should be Nxm
             gts = gts_[imgId['id'], catId]
             dts = dts_[imgId['id'], catId]
+            if dts:
+                npgt = np.array(gts[0]["keypoints"])
+                npdt = np.array(dts[0]["keypoints"])
+                mask = npdt[2::3] >= joint_thres
+                RMSE = np.sqrt((npgt[0::3] - npdt[0::3]) ** 2 + (npgt[1::3] - npdt[1::3]) ** 2)
+                RMSE_mask = RMSE[mask]
+                mean_rmse = np.round(np.nanmean(RMSE.flatten()), 2)
+                mean_rmse_mask = np.round(np.nanmean(RMSE_mask.flatten()), 2)
+                print(f"mean rmse: {mean_rmse}")
+                print(f"mean rmse mask: {mean_rmse_mask}")
+                mean_rmse_list.append(mean_rmse)
+                mean_rmse_mask_list.append(mean_rmse_mask)
+
             inds = np.argsort([-d['score'] for d in dts], kind='mergesort')
             dts = [dts[i] for i in inds]
             if len(dts) > p.maxDets[-1]:
@@ -178,7 +193,7 @@ def plot(data, gt_file, img_path, save_path,
                 vg = g[2::3]
 
                 for i, dt in enumerate(dts):
-                    # Calculate IoU
+                    # Calculate Bbox IoU
                     dt_bb = dt['bbox']
                     dt_x0 = dt_bb[0] - dt_bb[2];
                     dt_x1 = dt_bb[0] + dt_bb[2] * 2
@@ -191,8 +206,8 @@ def plot(data, gt_file, img_path, save_path,
                     s_x = max(x1, dt_x1) - min(x0, dt_x0)
                     s_y = max(y1, dt_y1) - min(y0, dt_y0)
                     sum_area = s_x * s_y
-                    iou = ol_area / (sum_area + np.spacing(1))
-                    score = dt['score']
+                    iou = np.round(ol_area / (sum_area + np.spacing(1)), 2)
+                    score = np.round(dt['score'], 2)
                     print(f"score: {dt['score']}")
                     if iou < 0.1 or score < threshold:
                         continue
@@ -204,6 +219,7 @@ def plot(data, gt_file, img_path, save_path,
                         num_box += 1
                         sum_score += dt['score']
                         dt_joints = np.array(dt['keypoints']).reshape(20, -1)
+
                         joints_dict = map_joint_dict(dt_joints)
                         # print(joints_dict)
                         # print(link_pairs)
@@ -269,6 +285,8 @@ def plot(data, gt_file, img_path, save_path,
                 #             bbox_inckes='tight', dpi=100)
             # plt.show()
             plt.close()
+    print(f"total mean rmse: {np.mean(mean_rmse_list)}")
+    print(f"total mean rmse mask: {np.mean(mean_rmse_mask_list)}")
 
 
 if __name__ == '__main__':
