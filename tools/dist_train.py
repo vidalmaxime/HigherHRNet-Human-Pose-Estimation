@@ -243,7 +243,7 @@ def main_worker(
     logger.info(train_loader.dataset)
     valid_loader, valid_dataset = make_test_dataloader(cfg)
 
-    best_perf = -1
+    best_perf = 1000000000
     best_model = False
     last_epoch = -1
     optimizer = get_optimizer(cfg, model)
