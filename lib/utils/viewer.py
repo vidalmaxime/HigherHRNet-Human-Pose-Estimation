@@ -85,7 +85,7 @@ def parse_args():
     parser.add_argument('--gt-anno',
                         help='Path of COCO val annotation',
                         type=str,
-                        default='data/coco/annotations/dog_keypoints_val.json'
+                        default='data/coco/annotations/animal_keypoints_val.json'
                         )
 
     parser.add_argument('--save-path',
@@ -126,7 +126,6 @@ def plot(data, gt_file, img_path, save_path,
 
     p = coco_eval.params
     p.imgIds = list(np.unique(p.imgIds))
-    print(p.imgIds)
     if p.useCats:
         p.catIds = list(np.unique(p.catIds))
     p.maxDets = sorted(p.maxDets)
@@ -140,11 +139,11 @@ def plot(data, gt_file, img_path, save_path,
     mean_rmse_list = []
     mean_rmse_mask_list = []
     for catId in catIds:
-        for imgId in imgs[:1]:
+        for imgId in imgs[:3]:
             # dimension here should be Nxm
             gts = gts_[imgId['id'], catId]
             dts = dts_[imgId['id'], catId]
-            if dts:
+            if len(gts) != 0 and len(dts) != 0:
                 npgt = np.array(gts[0]["keypoints"])
                 npdt = np.array(dts[0]["keypoints"])
                 mask = npdt[2::3] >= joint_thres

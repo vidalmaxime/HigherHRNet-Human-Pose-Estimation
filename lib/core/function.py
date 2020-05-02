@@ -22,7 +22,8 @@ import torchvision.transforms
 from core.group import HeatmapParser
 from core.inference import aggregate_results
 from core.inference import get_multi_stage_outputs
-from pycocotools.coco import COCO
+from utils.coco import COCO
+# from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 from tqdm import tqdm
 from utils.transforms import get_final_preds
@@ -55,7 +56,7 @@ def _print_name_value(logger, name_value, full_arch_name):
     )
 
 
-def validate(config, val_loader, val_dataset, model,  output_dir,
+def validate(config, val_loader, val_dataset, model, output_dir,
              tb_log_dir, writer_dict=None):
     model.eval()
     if config.MODEL.NAME == 'pose_hourglass':
@@ -164,7 +165,7 @@ def validate(config, val_loader, val_dataset, model,  output_dir,
             # dimension here should be Nxm
             gts = gts_[imgId, catId]
             dts = dts_[imgId, catId]
-            if dts:
+            if len(gts) != 0 and len(dts) != 0:
                 npgt = np.array(gts[0]["keypoints"])
                 npdt = np.array(dts[0]["keypoints"])
                 mask = npdt[2::3] >= joint_thres
