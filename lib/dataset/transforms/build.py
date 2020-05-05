@@ -11,10 +11,13 @@ from __future__ import print_function
 
 from . import transforms as T
 
-
+# TODO (not sure about this)
 FLIP_CONFIG = {
+    # 'COCO': [
+    #     0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15
+    # ],
     'COCO': [
-        0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15
+        0, 2, 1, 4, 3, 5, 6, 7, 9, 8, 11, 10, 13, 12, 15, 14, 17, 16, 19, 18
     ],
     'COCO_WITH_CENTER': [
         0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15, 17

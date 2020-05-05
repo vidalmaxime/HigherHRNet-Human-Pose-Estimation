@@ -71,7 +71,7 @@ def match_by_tag(inp, params):
                 diff_normed = np.concatenate(
                     (
                         diff_normed,
-                        np.zeros((num_added, num_added-num_grouped))+1e10
+                        np.zeros((num_added, num_added - num_grouped)) + 1e10
                     ),
                     axis=1
                 )
@@ -79,9 +79,9 @@ def match_by_tag(inp, params):
             pairs = py_max_match(diff_normed)
             for row, col in pairs:
                 if (
-                    row < num_added
-                    and col < num_grouped
-                    and diff_saved[row][col] < params.tag_threshold
+                        row < num_added
+                        and col < num_grouped
+                        and diff_saved[row][col] < params.tag_threshold
                 ):
                     key = grouped_keys[col]
                     joint_dict[key][idx] = joints[row]
@@ -111,11 +111,12 @@ class Params(object):
 
         if cfg.DATASET.WITH_CENTER and not cfg.TEST.IGNORE_CENTER:
             self.joint_order = [
-                i-1 for i in [18, 1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17] #TODO for animal pose
+                i - 1 for i in [18, 1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17]
             ]
         else:
+            # TODO (not sure about this)
             self.joint_order = [
-                i-1 for i in [1, 2, 3, 4, 5, 6, 7, 12, 13, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20]
+                i - 1 for i in [1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 19, 20, 11, 12, 17, 18, 9, 10, 15, 16]
             ]
 
 
@@ -149,7 +150,7 @@ class HeatmapParser(object):
         det = det.view(num_images, num_joints, -1)
         val_k, ind = det.topk(self.params.max_num_people, dim=2)
 
-        tag = tag.view(tag.size(0), tag.size(1), w*h, -1)
+        tag = tag.view(tag.size(0), tag.size(1), w * h, -1)
         if not self.tag_per_joint:
             tag = tag.expand(-1, self.params.num_joints, -1, -1)
 
@@ -181,18 +182,18 @@ class HeatmapParser(object):
                     if joint[2] > 0:
                         y, x = joint[0:2]
                         xx, yy = int(x), int(y)
-                        #print(batch_id, joint_id, det[batch_id].shape)
+                        # print(batch_id, joint_id, det[batch_id].shape)
                         tmp = det[batch_id][joint_id]
-                        if tmp[xx, min(yy+1, tmp.shape[1]-1)] > tmp[xx, max(yy-1, 0)]:
+                        if tmp[xx, min(yy + 1, tmp.shape[1] - 1)] > tmp[xx, max(yy - 1, 0)]:
                             y += 0.25
                         else:
                             y -= 0.25
 
-                        if tmp[min(xx+1, tmp.shape[0]-1), yy] > tmp[max(0, xx-1), yy]:
+                        if tmp[min(xx + 1, tmp.shape[0] - 1), yy] > tmp[max(0, xx - 1), yy]:
                             x += 0.25
                         else:
                             x -= 0.25
-                        ans[batch_id][people_id, joint_id, 0:2] = (y+0.5, x+0.5)
+                        ans[batch_id][people_id, joint_id, 0:2] = (y + 0.5, x + 0.5)
         return ans
 
     def refine(self, det, tag, keypoints):
@@ -253,7 +254,7 @@ class HeatmapParser(object):
             for i in range(det.shape[0]):
                 # add keypoint if it is not detected
                 if ans[i, 2] > 0 and keypoints[i, 2] == 0:
-                # if ans[i, 2] > 0.01 and keypoints[i, 2] == 0:
+                    # if ans[i, 2] > 0.01 and keypoints[i, 2] == 0:
                     keypoints[i, :2] = ans[i, :2]
                     keypoints[i, 2] = ans[i, 2]
 
