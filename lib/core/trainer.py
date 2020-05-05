@@ -16,6 +16,8 @@ import time
 from utils.utils import AverageMeter
 from utils.vis import save_debug_images
 
+from core.loss import JointsMSELoss
+
 
 def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
              output_dir, tb_log_dir, writer_dict, fp16=False):
@@ -27,6 +29,7 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
     heatmaps_loss_meter = [AverageMeter() for _ in range(cfg.LOSS.NUM_STAGES)]
     push_loss_meter = [AverageMeter() for _ in range(cfg.LOSS.NUM_STAGES)]
     pull_loss_meter = [AverageMeter() for _ in range(cfg.LOSS.NUM_STAGES)]
+    mse_loss_meter = AverageMeter()
 
     # switch to train mode
     model.train()
@@ -46,6 +49,14 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
         # loss = loss_factory(outputs, heatmaps, masks)
         heatmaps_losses, push_losses, pull_losses = \
             loss_factory(outputs, heatmaps, masks, joints)
+
+        mse_loss = JointsMSELoss(
+            use_target_weight=False
+        ).cuda()
+        logger.info(len(outputs))
+        logger.info(len(heatmaps))
+        mse_losses = mse_loss(outputs[1], heatmaps[1], masks)
+        mse_loss_meter.update(mse_losses.item(), images.size(0))
 
         loss = 0
         for idx in range(cfg.LOSS.NUM_STAGES):
@@ -86,16 +97,16 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
                   'Speed: {speed:.1f} samples/s\t' \
                   'Data: {data_time.val:.3f}s ({data_time.avg:.3f}s)\t' \
                   '{heatmaps_loss}{push_loss}{pull_loss}'.format(
-                      epoch, i, len(data_loader),
-                      batch_time=batch_time,
-                      speed=images.size(0)/batch_time.val,
-                      data_time=data_time,
-                      heatmaps_loss=_get_loss_info(heatmaps_loss_meter, 'heatmaps'),
-                      push_loss=_get_loss_info(push_loss_meter, 'push'),
-                      pull_loss=_get_loss_info(pull_loss_meter, 'pull')
-                  )
+                epoch, i, len(data_loader),
+                batch_time=batch_time,
+                speed=images.size(0) / batch_time.val,
+                data_time=data_time,
+                heatmaps_loss=_get_loss_info(heatmaps_loss_meter, 'heatmaps'),
+                push_loss=_get_loss_info(push_loss_meter, 'push'),
+                pull_loss=_get_loss_info(pull_loss_meter, 'pull'),
+            )
             logger.info(msg)
-
+            logger.info(f"mse loss is {_get_loss_info(mse_loss_meter,'mse')}")
             writer = writer_dict['writer']
             global_steps = writer_dict['train_global_steps']
             for idx in range(cfg.LOSS.NUM_STAGES):
@@ -114,6 +125,11 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
                     pull_loss_meter[idx].val,
                     global_steps
                 )
+            writer.add_scalar(
+                'train_mse_loss',
+                mse_loss_meter.val,
+                global_steps
+            )
             writer_dict['train_global_steps'] = global_steps + 1
 
             prefix = '{}_{}'.format(os.path.join(output_dir, 'train'), i)

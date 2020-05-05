@@ -33,7 +33,6 @@ coco_part_idx = {
 #     ('kne_r', 'ank_r')
 # ]
 
-# TODO
 coco_part_orders = [
     ('nose', 'eye_l'), ('eye_l', 'eye_r'), ('eye_r', 'nose'),
     ('eye_l', 'ear_l'), ('eye_r', 'ear_r'), ('nose', 'throat'),

@@ -21,7 +21,7 @@ from dataset import VIS_CONFIG
 def add_joints(image, joints, color, dataset='COCO'):
     part_idx = VIS_CONFIG[dataset]['part_idx']
     part_orders = VIS_CONFIG[dataset]['part_orders']
-    kpt_threshold = 0.2
+    kpt_threshold = 0.1
 
     def link(a, b, color):
         if part_idx[a] < joints.shape[0] and part_idx[b] < joints.shape[0]:
