@@ -53,8 +53,8 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
         mse_loss = JointsMSELoss(
             use_target_weight=False
         ).cuda()
-        logger.info(outputs[1].size(0))
-        logger.info(outputs[1].size(1))
+        logger.info(outputs[1].reshape((8, 20, -1)).split(1, 1))
+        logger.info(heatmaps[1].reshape((8, 20, -1)).split(1, 1))
         mse_losses = mse_loss(outputs[1], heatmaps[1], masks)
         mse_loss_meter.update(mse_losses.item(), images.size(0))
 
