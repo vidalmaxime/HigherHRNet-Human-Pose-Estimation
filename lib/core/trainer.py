@@ -53,8 +53,8 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
         mse_loss = JointsMSELoss(
             use_target_weight=False
         ).cuda()
-        logger.info(len(outputs))
-        logger.info(len(heatmaps))
+        logger.info(len(outputs[1]))
+        logger.info(len(heatmaps[1]))
         mse_losses = mse_loss(outputs[1], heatmaps[1], masks)
         mse_loss_meter.update(mse_losses.item(), images.size(0))
 
@@ -106,7 +106,7 @@ def do_train(cfg, model, data_loader, loss_factory, optimizer, epoch,
                 pull_loss=_get_loss_info(pull_loss_meter, 'pull'),
             )
             logger.info(msg)
-            logger.info(f"mse loss is {_get_loss_info(mse_loss_meter,'mse')}")
+            logger.info(f"mse loss val {mse_loss_meter.val} and avg {mse_loss_meter.avg}")
             writer = writer_dict['writer']
             global_steps = writer_dict['train_global_steps']
             for idx in range(cfg.LOSS.NUM_STAGES):
