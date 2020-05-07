@@ -41,6 +41,10 @@ from utils.utils import get_optimizer
 from utils.utils import save_checkpoint
 from utils.utils import setup_logger
 
+from dataset import make_test_dataloader
+
+from core.function import validate
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train keypoints network')
@@ -165,7 +169,7 @@ def main_worker(
     # setup logger
     logger, _ = setup_logger(final_output_dir, args.rank, 'train')
 
-    model = eval('models.'+cfg.MODEL.NAME+'.get_pose_net')(
+    model = eval('models.' + cfg.MODEL.NAME + '.get_pose_net')(
         cfg, is_train=True
     )
 
@@ -193,7 +197,7 @@ def main_worker(
         dump_input = torch.rand(
             (1, 3, cfg.DATASET.INPUT_SIZE, cfg.DATASET.INPUT_SIZE)
         )
-        writer_dict['writer'].add_graph(model, (dump_input, ))
+        #  writer_dict['writer'].add_graph(model, (dump_input, ))  #doesn't seem to work with pytorch 1.4
         # logger.info(get_model_summary(model, dump_input, verbose=cfg.VERBOSE))
 
     if cfg.FP16.ENABLED:
@@ -237,8 +241,9 @@ def main_worker(
         cfg, is_train=True, distributed=args.distributed
     )
     logger.info(train_loader.dataset)
+    valid_loader, valid_dataset = make_test_dataloader(cfg)
 
-    best_perf = -1
+    best_perf = 1000000000
     best_model = False
     last_epoch = -1
     optimizer = get_optimizer(cfg, model)
@@ -284,8 +289,12 @@ def main_worker(
         # In PyTorch 1.1.0 and later, you should call `lr_scheduler.step()` after `optimizer.step()`.
         lr_scheduler.step()
 
-        perf_indicator = epoch
-        if perf_indicator >= best_perf:
+        perf_indicator = validate(
+            cfg, valid_loader, valid_dataset, model,
+            final_output_dir, tb_log_dir, writer_dict
+        )
+        # perf_indicator = epoch
+        if perf_indicator <= best_perf:
             best_perf = perf_indicator
             best_model = True
         else:
