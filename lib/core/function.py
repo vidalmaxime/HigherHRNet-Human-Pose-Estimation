@@ -22,8 +22,7 @@ import torchvision.transforms
 from core.group import HeatmapParser
 from core.inference import aggregate_results
 from core.inference import get_multi_stage_outputs
-from utils.coco import COCO
-# from pycocotools.coco import COCO
+from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 from tqdm import tqdm
 from utils.transforms import get_final_preds
