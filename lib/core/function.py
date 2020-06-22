@@ -178,8 +178,8 @@ def validate(config, val_loader, val_dataset, model, output_dir,
                 RMSE_pcutoff01 = RMSE[0][mask01]
                 RMSE_pcutoff06 = RMSE[0][mask06]
                 mean_rmse = np.round(np.nansum(RMSE[0])/np.nansum(maskgt), 2)
-                mean_rmse_pcutoff01 = np.nanmean(RMSE_pcutoff01.flatten())
-                mean_rmse_pcutoff06 = np.nanmean(RMSE_pcutoff06.flatten())
+                mean_rmse_pcutoff01 = np.nansum(RMSE_pcutoff01)/np.nansum(maskgt)
+                mean_rmse_pcutoff06 = np.nansum(RMSE_pcutoff06)/np.nansum(maskgt)
                 mean_rmse_list.append(mean_rmse)
                 mean_rmse_pcutoff01_list.append(mean_rmse_pcutoff01)
                 mean_rmse_pcutoff06_list.append(mean_rmse_pcutoff06)
