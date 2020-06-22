@@ -170,20 +170,22 @@ def validate(config, val_loader, val_dataset, model, output_dir,
             if len(gts) != 0 and len(dts) != 0:
                 npgt = np.array(gts[0]["keypoints"])
                 npdt = np.array(dts[0]["keypoints"])
+                maskgt = npgt[2::3] > 0
                 mask01 = npdt[2::3] >= pcutoff01
                 mask06 = npdt[2::3] >= pcutoff06
-                RMSE = np.sqrt((npgt[0::3] - npdt[0::3]) ** 2 + (npgt[1::3] - npdt[1::3]) ** 2)
-                RMSE_pcutoff01 = RMSE[mask01]
-                RMSE_pcutoff06 = RMSE[mask06]
-                mean_rmse = np.round(np.nanmean(RMSE.flatten()), 2)
+                RMSE = np.sqrt((npgt[0::3] * [maskgt] - npdt[0::3] * [maskgt]) ** 2 + (
+                            npgt[1::3] * [maskgt] - npdt[1::3] * [maskgt]) ** 2)
+                RMSE_pcutoff01 = RMSE[0][mask01]
+                RMSE_pcutoff06 = RMSE[0][mask06]
+                mean_rmse = np.round(np.nanmean(RMSE[0])/np.nansum(maskgt), 2)
                 mean_rmse_pcutoff01 = np.nanmean(RMSE_pcutoff01.flatten())
                 mean_rmse_pcutoff06 = np.nanmean(RMSE_pcutoff06.flatten())
                 mean_rmse_list.append(mean_rmse)
                 mean_rmse_pcutoff01_list.append(mean_rmse_pcutoff01)
                 mean_rmse_pcutoff06_list.append(mean_rmse_pcutoff06)
     print(f"Mean RMSE: {np.mean(mean_rmse_list)}")
-    print(f"Mean RMSE p-cutoff 0.1: {np.round(np.mean(mean_rmse_pcutoff01_list),2)}")
-    print(f"Mean RMSE p-cutoff 0.6: {np.round(np.mean(mean_rmse_pcutoff06_list),2)}")
+    print(f"Mean RMSE p-cutoff 0.1: {np.round(np.mean(mean_rmse_pcutoff01_list), 2)}")
+    print(f"Mean RMSE p-cutoff 0.6: {np.round(np.mean(mean_rmse_pcutoff06_list), 2)}")
     global_steps = writer_dict['valid_global_steps']
     writer_dict["writer"].add_scalar(
         "val_rmse",

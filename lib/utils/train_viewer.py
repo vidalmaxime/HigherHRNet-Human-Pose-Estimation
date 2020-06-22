@@ -80,19 +80,19 @@ def parse_args():
     parser.add_argument('--image-path',
                         help='Path of COCO val images',
                         type=str,
-                        default='/home/maxime/Documents/mathislab/bearproject/HigherHRNet-Human-Pose-Estimation/data/coco/images/val/'
+                        default='/home/maxime/Documents/mathislab/bearproject/HigherHRNet-Human-Pose-Estimation/data/coco/images/train/'
                         )
 
     parser.add_argument('--gt-anno',
                         help='Path of COCO val annotation',
                         type=str,
-                        default='/home/maxime/Documents/mathislab/bearproject/HigherHRNet-Human-Pose-Estimation/data/coco/annotations/animal_keypoints_val.json'
+                        default='/home/maxime/Documents/mathislab/bearproject/HigherHRNet-Human-Pose-Estimation/data/coco/annotations/animal_keypoints_train.json'
                         )
 
     parser.add_argument('--save-path',
                         help="Path to save the visualizations",
                         type=str,
-                        default='visualization/cocoval/')
+                        default='visualization/cocotrain/')
 
     args = parser.parse_args()
 
@@ -127,7 +127,6 @@ def plot(gt_file, img_path, save_path):
         plt.savefig(save_path + img["file_name"].split(".")[0] + '.png', format='png', bbox_inckes='tight', dpi=100)
         #plt.show()
         plt.close()
-
 
 
 if __name__ == '__main__':
