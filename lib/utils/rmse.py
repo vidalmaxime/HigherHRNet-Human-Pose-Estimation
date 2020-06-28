@@ -11,13 +11,13 @@ def parse_args():
     parser.add_argument('--gt-anno',
                         help='Path of COCO val annotation',
                         type=str,
-                        default='/home/maxime/Documents/mathislab/bearproject/data/annotations_trainval2017/annotations/person_keypoints_val2017.json'
+                        default='/home/maxime/Documents/mathislab/bearproject/data/mcneilkeypoints/animal_keypoints_mcneilbears.json'#annotations_trainval2017/annotations/person_keypoints_val2017.json'
                         )
 
     parser.add_argument('--prediction',
                         help="Prediction file to visualize",
                         type=str,
-                        default='/home/maxime/Documents/mathislab/bearproject/data/annotations_trainval2017/keypointshuman.json')
+                        default='/home/maxime/Documents/mathislab/bearproject/data/mcneilkeypoints/keypoints_test_results.json')#annotations_trainval2017/keypointshuman.json')
 
     args = parser.parse_args()
 
