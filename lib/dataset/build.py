@@ -67,7 +67,7 @@ def make_dataloader(cfg, is_train=True, distributed=False):
     images_per_batch = images_per_gpu * len(cfg.GPUS)
 
     dataset = build_dataset(cfg, is_train)
-
+    print(dataset)
     if is_train and distributed:
         train_sampler = torch.utils.data.distributed.DistributedSampler(
             dataset
