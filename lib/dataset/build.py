@@ -70,11 +70,9 @@ def make_dataloader(logger, cfg, is_train=True, distributed=False):
 
     dataset = build_dataset(cfg, is_train)
     logger.info(dataset)
-    class_weights = [0, 0.45, 0.05, 0.5]
     num_samples = len(dataset)
-    logger.info(num_samples)
-    logger.info([item for item in dataset])
-    labels = [item[4] for item in dataset]
+    class_weights = [0, 1, 1, 6]
+    labels = [item[4][0] for item in dataset]
     weights = [class_weights[labels[i]] for i in range(int(num_samples))]
     sampler = WeightedRandomSampler(torch.DoubleTensor(weights), int(num_samples))
 
