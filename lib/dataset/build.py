@@ -9,6 +9,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from catalyst.data import DistributedSamplerWrapper
 import torch.utils.data
 from torch.utils.data import WeightedRandomSampler
 
@@ -73,14 +74,15 @@ def make_dataloader(logger, cfg, is_train=True, distributed=False):
     num_samples = len(dataset)
     logger.info(num_samples)
     logger.info([item for item in dataset])
-    # labels = [item["category_id"] for item in dataset]
-    # weights = [class_weights[labels[i]] for i in range(int(num_samples))]
-    # sampler = WeightedRandomSampler(torch.DoubleTensor(weights), int(num_samples))
+    labels = [item[4] for item in dataset]
+    weights = [class_weights[labels[i]] for i in range(int(num_samples))]
+    sampler = WeightedRandomSampler(torch.DoubleTensor(weights), int(num_samples))
 
     if is_train and distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(
-            dataset
-        )
+        # train_sampler = torch.utils.data.distributed.DistributedSampler(
+        #     dataset
+        # )
+        train_sampler = DistributedSamplerWrapper(sampler)
         shuffle = False
     else:
         train_sampler = None
