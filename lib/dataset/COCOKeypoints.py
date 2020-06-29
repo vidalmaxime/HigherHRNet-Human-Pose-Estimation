@@ -17,7 +17,6 @@ import pycocotools
 from .COCODataset import CocoDataset
 from .target_generators import HeatmapGenerator
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -70,6 +69,10 @@ class CocoKeypoints(CocoDataset):
             if obj['iscrowd'] == 0 or obj['num_keypoints'] > 0
         ]
 
+        categories = [
+            obj["category_id"] for obj in anno
+            if obj['iscrowd'] == 0 or obj['num_keypoints'] > 0
+        ]
         # TODO(bowen): to generate scale-aware sigma, modify `get_joints` to associate a sigma to each joint
         joints = self.get_joints(anno)
 
@@ -90,7 +93,7 @@ class CocoKeypoints(CocoDataset):
             mask_list[scale_id] = mask_list[scale_id].astype(np.float32)
             joints_list[scale_id] = joints_t.astype(np.int32)
 
-        return img, target_list, mask_list, joints_list
+        return img, target_list, mask_list, joints_list, categories
 
     def get_joints(self, anno):
         num_people = len(anno)
@@ -144,7 +147,7 @@ class CocoKeypoints(CocoDataset):
         assert isinstance(heatmap_generator, (list, tuple)), 'heatmap_generator should be a list or tuple'
         assert isinstance(joints_generator, (list, tuple)), 'joints_generator should be a list or tuple'
         assert len(heatmap_generator) == len(joints_generator), \
-            'heatmap_generator and joints_generator should have same length,'\
+            'heatmap_generator and joints_generator should have same length,' \
             'got {} vs {}.'.format(
                 len(heatmap_generator), len(joints_generator)
             )
