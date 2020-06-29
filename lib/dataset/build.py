@@ -10,6 +10,7 @@ from __future__ import division
 from __future__ import print_function
 
 import torch.utils.data
+from torch.utils.data import WeightedRandomSampler
 
 from .COCODataset import CocoDataset as coco
 from .COCOKeypoints import CocoKeypoints as coco_kpt
@@ -57,7 +58,7 @@ def build_dataset(cfg, is_train):
     return dataset
 
 
-def make_dataloader(cfg, is_train=True, distributed=False):
+def make_dataloader(logger, cfg, is_train=True, distributed=False):
     if is_train:
         images_per_gpu = cfg.TRAIN.IMAGES_PER_GPU
         shuffle = True
@@ -67,7 +68,14 @@ def make_dataloader(cfg, is_train=True, distributed=False):
     images_per_batch = images_per_gpu * len(cfg.GPUS)
 
     dataset = build_dataset(cfg, is_train)
-    print(dataset)
+    logger.info(dataset)
+    class_weights = [0, 0.45, 0.05, 0.5]
+    num_samples = len(dataset)
+    logger.info(num_samples)
+    # labels = [item["category_id"] for item in dataset]
+    # weights = [class_weights[labels[i]] for i in range(int(num_samples))]
+    # sampler = WeightedRandomSampler(torch.DoubleTensor(weights), int(num_samples))
+
     if is_train and distributed:
         train_sampler = torch.utils.data.distributed.DistributedSampler(
             dataset

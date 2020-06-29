@@ -238,7 +238,7 @@ def main_worker(
 
     # Data loading code
     train_loader = make_dataloader(
-        cfg, is_train=True, distributed=args.distributed
+        logger, cfg, is_train=True, distributed=args.distributed
     )
     logger.info(train_loader.dataset)
     valid_loader, valid_dataset = make_test_dataloader(cfg)
